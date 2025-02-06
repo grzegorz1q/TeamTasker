@@ -1,0 +1,28 @@
+services:
+  teamtasker.server.api:
+    container_name: server
+    image: ${DOCKER_REGISTRY-}teamtaskerserverapi
+    ports:
+      - 7014:443
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/TeamTasker.Server.API.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=YourNewPassword123
+    volumes:
+      - ./TeamTasker.Server.API.pfx:/app/TeamTasker.Server.API.pfx
+    entrypoint: ["dotnet", "TeamTasker.Server.API.dll"]
+    build:
+      context: .
+      dockerfile: Server/TeamTasker.Server.API/Dockerfile
+
+  teamtasker.server.gui:
+    container_name: client
+    build:
+      context: ./Client/TeamTasker.Client.GUI
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    command: npm run wNetwork --host 0.0.0.0
+
+
